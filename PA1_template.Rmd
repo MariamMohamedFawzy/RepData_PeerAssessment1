@@ -7,19 +7,120 @@ output:
 
 
 ## Loading and preprocessing the data
+```{r}
+data <- read.csv(unz("activity.zip", "activity.csv"))
+```
 
+```{r}
+head(data)
+```
+
+#### convert date column from factor to date
+```{r}
+data$date <- as.Date(as.character(data$date))
+```
 
 
 ## What is mean total number of steps taken per day?
 
+```{r}
+library(dplyr)
+TotalSteps <- data %>% group_by(date) %>% summarize(total = sum(steps, na.rm = TRUE))
+```
 
+```{r}
+hist(TotalSteps$total, xlab = 'Total number of steps', ylab = '', breaks = 30)
+```
+
+### average and median
+
+```{r}
+avg_and_med<- data %>% group_by(date) %>% summarize(avg = mean(steps, na.rm = TRUE), med = median(steps, na.rm = TRUE))
+head(avg_and_med)
+```
+
+```{r}
+mean(data$steps, na.rm = TRUE)
+```
+
+
+```{r}
+median(data$steps, na.rm = TRUE)
+```
 
 ## What is the average daily activity pattern?
 
+```{r}
+data_2 <- data %>% group_by(interval) %>% summarize(avg = mean(steps, na.rm = TRUE))
+plot(data_2$interval, data_2$avg, type = 'l')
+```
+
+```{r}
+data_2[data_2$avg == max(data_2$avg), ]$interval
+```
 
 
 ## Imputing missing values
 
+```{r}
+sum(is.na(data$steps))
+```
+
+
+```{r}
+data_3 <- data
+data_3[is.na(data_3$steps), ]$steps <- data_2$avg[1]
+```
+
+```{r}
+sum(is.na(data_3$steps))
+```
+
+```{r}
+data_4 <- data %>% group_by(date) %>% summarize(avg = mean(steps, na.rm = TRUE))
+hist(data_4$avg, breaks = 30)
+```
+
+
+```{r}
+mean(data_3$steps)
+```
+
+
+```{r}
+median(data_3$steps)
+```
+
+the mean is slightly different, but the median is the same
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r}
+data_3$type<- ifelse(weekdays(data_3$date)=="Saturday" | weekdays(data_3$date)=="Sunday", "Weekend", "Weekday")
+head(data_3)
+```
+
+
+```{r}
+data_day <- data_3 %>% filter(type == 'Weekday') %>% group_by(interval) %>% summarize(avg = mean(steps))
+data_end <- data_3 %>% filter(type == 'Weekend') %>% group_by(interval) %>% summarize(avg = mean(steps))
+```
+
+
+
+```{r}
+par(mfrow=c(2, 1))
+plot(data_day$interval, data_day$avg, type='l')
+plot(data_end$interval, data_end$avg, type='l')
+```
+
+
+
+
+
+
+
+
+
+
