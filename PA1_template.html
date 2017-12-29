@@ -183,6 +183,7 @@ plot(data_2$interval, data_2$avg, type = 'l')</code></pre>
 <h2>Imputing missing values</h2>
 <pre class="r"><code>sum(is.na(data$steps))</code></pre>
 <pre><code>## [1] 2304</code></pre>
+<p>impute with the average of interval 5</p>
 <pre class="r"><code>data_3 &lt;- data
 data_3[is.na(data_3$steps), ]$steps &lt;- data_2$avg[1]</code></pre>
 <pre class="r"><code>sum(is.na(data_3$steps))</code></pre>

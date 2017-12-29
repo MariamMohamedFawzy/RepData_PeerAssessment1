@@ -66,6 +66,7 @@ data_2[data_2$avg == max(data_2$avg), ]$interval
 sum(is.na(data$steps))
 ```
 
+impute with the average of interval 5
 
 ```{r}
 data_3 <- data

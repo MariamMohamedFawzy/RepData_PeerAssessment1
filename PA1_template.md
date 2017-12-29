@@ -139,6 +139,7 @@ sum(is.na(data$steps))
 ## [1] 2304
 ```
 
+impute with the average of interval 5
 
 
 ```r
